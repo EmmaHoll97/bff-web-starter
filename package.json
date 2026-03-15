@@ -1,0 +1,42 @@
+{
+  "name": "spfa-website",
+  "version": "0.0.1",
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "scripts": {
+    "dev": "npm run build -w client && concurrently \"npm run dev -w client\" \"npm run dev -w server\"",
+    "build": "npm run build -w client && npm run build -w server",
+    "start": "npm run start -w server",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:client": "jest --selectProjects client",
+    "test:server": "jest --selectProjects server",
+    "upgrade": "npx npm-check-updates -u --workspaces --root && npm install"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/jest": "^30.0.0",
+    "concurrently": "^9.2.1",
+    "eslint": "^10.0.3",
+    "jest": "^30.3.0",
+    "jest-environment-jsdom": "^30.3.0",
+    "jest-sonar-reporter": "^2.0.0",
+    "nodemon": "^3.1.14",
+    "prettier": "3.8.1",
+    "ts-jest": "^29.4.6",
+    "ts-node": "^10.9.2",
+    "typescript-eslint": "^8.57.0"
+  },
+  "jestSonar": {
+    "reportPath": "reports",
+    "reportFile": "test-report.xml",
+    "indent": 4
+  }
+}
