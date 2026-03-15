@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "npm install",
+      "npm run dev",
+      "npm run build",
+      "npm start",
+      "npm test",
+      "npm run test:client",
+      "npm run test:server",
+      "npm run lint",
+      "npm run lint:fix",
+      "npm run format",
+      "npm run format:check",
+      "npx tsc --noEmit",
+      "npx tsc -b",
+      "docker compose up",
+      "docker compose down",
+      "docker compose build"
+    ],
+    "deny": ["rm -rf /", "curl * | sh", "wget * | sh", "npm publish"]
+  }
+}

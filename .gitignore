@@ -27,3 +27,6 @@ dist-ssr
 *.sln
 *.sw?
 reports
+
+# Claude Code
+.claude/settings.local.json
