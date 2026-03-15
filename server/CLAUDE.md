@@ -1,14 +1,13 @@
 # CLAUDE.md — Server Workspace
 
-Express 5 BFF server in TypeScript with ES Modules.
+Express 5 BFF server in JavaScript with ES Modules.
 
 ## Key Details
 
-- Entry point: `src/index.ts`
-- Instrumentation: `src/instrumentation.ts` (OpenTelemetry OTLP to `localhost:4318`)
-- Build output: `dist/` (compiled JS)
+- Entry point: `src/index.js`
+- Instrumentation: `src/instrumentation.js` (OpenTelemetry OTLP to `localhost:4318`)
 - Static files: `public/` (Vite client build — do NOT edit manually)
-- Module system: NodeNext — **always use `.js` extensions in relative imports**
+- Module system: ES Modules — **always use `.js` extensions in relative imports**
 - `"type": "module"` in package.json — no CommonJS
 
 ## Dependencies
@@ -19,19 +18,16 @@ Express 5 BFF server in TypeScript with ES Modules.
 
 ## Dev Dependencies
 
-- tsx (dev server with watch mode)
 - supertest (API testing)
-- TypeScript 5.9
 
 ## Scripts
 
-- `npm run dev -w server` — tsx watch mode
-- `npm run build -w server` — tsc compile
-- `npm run start -w server` — node dist/index.js
+- `npm run dev -w server` — node --watch mode
+- `npm run start -w server` — node src/index.js
 
 ## Testing
 
-- Tests live alongside source: `src/**/*.test.ts`
+- Tests live alongside source: `src/**/*.test.js`
 - Environment: `node`
 - Library: `supertest` for HTTP assertions
 - Run: `npm run test:server` from repo root

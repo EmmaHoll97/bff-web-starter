@@ -8,11 +8,11 @@ This file is read by Claude Code to understand the project. Keep it up to date.
 
 Monorepo (npm workspaces) using the **Backend-for-Frontend (BFF)** pattern:
 
-- **`client/`** — React 19 SPA built with Vite 8 and TypeScript. Uses TanStack Query for data fetching, Firebase for auth, and react-gtm-module for analytics.
-- **`server/`** — Express 5 BFF server in TypeScript (ES Modules). Serves the compiled client bundle from `server/public/` in production and exposes `/api/*` routes. Swagger auto-generates API docs from JSDoc annotations on routes.
-- In **dev**, Vite proxies `/api` requests to Express (`vite.config.ts` proxy). In **production**, Express serves everything as a single deployable unit.
+- **`client/`** — React 19 SPA built with Vite 8 and JavaScript. Uses TanStack Query for data fetching, Firebase for auth, and react-gtm-module for analytics.
+- **`server/`** — Express 5 BFF server in JavaScript (ES Modules). Serves the compiled client bundle from `server/public/` in production and exposes `/api/*` routes. Swagger auto-generates API docs from JSDoc annotations on routes.
+- In **dev**, Vite proxies `/api` requests to Express (`vite.config.js` proxy). In **production**, Express serves everything as a single deployable unit.
 
-Client build output lands in `server/public/` (configured in `vite.config.ts` → `build.outDir`). **Never commit `server/public/` build artifacts.**
+Client build output lands in `server/public/` (configured in `vite.config.js` → `build.outDir`). **Never commit `server/public/` build artifacts.**
 
 ---
 
@@ -26,7 +26,7 @@ server/src/
 ├── helpers/        # Cross-service utility functions shared across the application
 ├── services/       # Business / service-layer logic (one file per domain)
 ├── schema/         # MongoDB schema definitions (Mongoose models)
-└── index.ts        # Main entry point — mounts routers, middleware, and starts the server
+└── index.js        # Main entry point — mounts routers, middleware, and starts the server
 ```
 
 - **Routers** own route definitions and their Swagger annotations. Keep annotations complete and up to date on every change.
@@ -47,16 +47,16 @@ client/src/
 ├── features/           # Feature modules — one directory per product feature
 │   └── [featureName]/  # Self-contained feature: its own components, helpers, and types
 ├── routers/            # Route definitions and routing logic (React Router)
-└── index.tsx           # Main entry point — renders the root React component
+└── main.jsx            # Main entry point — renders the root React component
 ```
 
 ### Layer responsibilities
 
 - **`components/`** — Purely presentational, shared UI primitives and composites (buttons, modals, form fields, layout wrappers). No feature-specific logic. No direct API calls.
-- **`helpers/`** — Shared hooks (`use*.ts`), TanStack Query query/mutation definitions, Axios/Fetch API wrapper functions, and pure utility functions. All data-fetching logic lives here or inside the relevant feature's own helpers.
-- **`features/[featureName]/`** — Everything specific to one feature lives together: its page-level components, local sub-components, feature-scoped hooks/queries, and types. Features may have their own `components/` and `helpers/` sub-directories. Features import from `components/` and `helpers/` but never from other features.
+- **`helpers/`** — Shared hooks (`use*.js`), TanStack Query query/mutation definitions, Axios/Fetch API wrapper functions, and pure utility functions. All data-fetching logic lives here or inside the relevant feature's own helpers.
+- **`features/[featureName]/`** — Everything specific to one feature lives together: its page-level components, local sub-components, feature-scoped hooks/queries. Features may have their own `components/` and `helpers/` sub-directories. Features import from `components/` and `helpers/` but never from other features.
 - **`routers/`** — React Router route configuration and any route guards or layout wrappers. No business logic here.
-- **`index.tsx`** — Bootstraps the app: mounts providers (QueryClientProvider, Firebase, GTM, Router) and renders the root component. Keep this file minimal.
+- **`main.jsx`** — Bootstraps the app: mounts providers (QueryClientProvider, Firebase, GTM, Router) and renders the root component. Keep this file minimal.
 
 ### React component rules
 
@@ -66,7 +66,7 @@ client/src/
 - **Mobile-first and responsive** — Design for mobile breakpoints first, then enhance for tablet and desktop.
 - **Cross-browser compatible** — All components must work correctly in Chrome, Firefox, Safari, and Edge.
 - **No business logic in JSX** — Keep JSX clean. Move conditionals, transforms, and handlers into the model layer or helpers.
-- **Prop types explicitly typed** — Always define and export a `Props` type or interface for every component.
+- **Prop types documented** — Use JSDoc `@param` annotations or PropTypes to document component props.
 
 ---
 
@@ -75,7 +75,7 @@ client/src/
 ```bash
 npm install              # Install all deps (both workspaces)
 npm run dev              # Dev: client HMR + server hot-reload
-npm run build            # Production build (client → server/public, server → server/dist)
+npm run build            # Production build (client → server/public)
 npm start                # Start production server
 npm test                 # Run all tests (Jest multi-project)
 npm run test:client      # Client tests only (jsdom)
@@ -92,14 +92,13 @@ docker compose up        # Docker build & run
 ## Testing
 
 - Jest multi-project config in `jest.config.js` at repo root.
-- **Client tests**: `client/src/**/*.test.{ts,tsx}` — `jsdom` environment, Testing Library + `@testing-library/user-event`.
-- **Server tests**: `server/src/**/*.test.ts` — `node` environment, Supertest.
-- Both use `ts-jest` with their respective `tsconfig.json`.
+- **Client tests**: `client/src/**/*.test.{js,jsx}` — `jsdom` environment, Testing Library + `@testing-library/user-event`.
+- **Server tests**: `server/src/**/*.test.js` — `node` environment, Supertest.
 - Test reports go to `reports/` as Sonar-compatible XML.
 
 ### Testing rules (non-negotiable)
 
-- **Unit tests** must live beside the file they test (`foo.ts` → `foo.test.ts`).
+- **Unit tests** must live beside the file they test (`foo.js` → `foo.test.js`).
 - **Integration tests** must live in `server/src/__tests__/` (server) or `client/src/__tests__/` (client).
 - **Coverage must stay at 80% or above** — never merge a change that drops coverage below this threshold.
 - **All tests must be kept up to date** with every code change. A passing test suite on stale tests is not acceptable.
@@ -107,10 +106,10 @@ docker compose up        # Docker build & run
 
 ---
 
-## TypeScript & Module System
+## Module System
 
-- **Server**: `"module": "NodeNext"`, `"moduleResolution": "NodeNext"`, `"type": "module"` in package.json. **Use `.js` extensions in relative imports** (e.g., `import { foo } from './utils.js'`). Use `import.meta.url` instead of `__dirname`.
-- **Client**: `"moduleResolution": "bundler"`, strict mode, `"jsx": "react-jsx"`. No import extensions needed (Vite handles resolution).
+- **Server**: `"type": "module"` in package.json. Use `.js` extensions in relative imports. Use `import.meta.url` instead of `__dirname`.
+- **Client**: Vite handles module resolution — no file extensions needed in imports.
 - Both target modern JS (ES2023 / ESNext). **No CommonJS** — do not use `require()` or `module.exports`.
 
 ---
@@ -129,7 +128,7 @@ All code must meet the following standards without exception. These apply to eve
 
 - **Guard clauses over nested `if` blocks** — return or throw early; keep the happy path unindented.
 - **Fat arrow (arrow function) notation** — use `const fn = () => {}` over `function fn() {}` for all non-class functions.
-- **Comments only where needed** — comment the *why*, not the *what*. Self-explanatory code needs no comment; non-obvious logic must have one.
+- **Comments only where needed** — comment the _why_, not the _what_. Self-explanatory code needs no comment; non-obvious logic must have one.
 - **Clean and human readable** — variable names, function names, and file names must clearly express intent.
 
 ### Swagger
@@ -150,7 +149,7 @@ All code must meet the following standards without exception. These apply to eve
 
 ## Code Style
 
-- ESLint 9 flat config (`eslint.config.mjs`) with `typescript-eslint`. `no-unused-vars` and `no-explicit-any` are warnings, not errors.
+- ESLint 9 flat config (`eslint.config.mjs`). `no-unused-vars` is a warning, not an error.
 - Prettier for formatting. Run `npm run format` before committing.
 - Use semicolons. Use single quotes. Trailing commas.
 
@@ -158,7 +157,7 @@ All code must meet the following standards without exception. These apply to eve
 
 ## Adding Features
 
-- **New API routes**: Add a router file under `server/src/routers/`. Mount it in `index.ts`. Add complete Swagger JSDoc annotations.
+- **New API routes**: Add a router file under `server/src/routers/`. Mount it in `index.js`. Add complete Swagger JSDoc annotations.
 - **New service logic**: Add to `server/src/services/`. One file per domain.
 - **New helpers**: Add to `server/src/helpers/`. Keep helpers pure and stateless where possible.
 - **New MongoDB models**: Add to `server/src/schema/`. Schema files define models only.
@@ -173,7 +172,7 @@ All code must meet the following standards without exception. These apply to eve
 
 ## Common Pitfalls
 
-- Server imports **must** use `.js` extensions even though source files are `.ts` (NodeNext resolution).
+- Server imports **must** use `.js` extensions (ES Module resolution).
 - Don't import server code from client or vice versa — they are separate workspaces.
 - `server/public/` is the Vite build output directory — don't manually edit files there.
 - Always run commands from the **repo root**, not from `client/` or `server/`.
@@ -184,4 +183,4 @@ All code must meet the following standards without exception. These apply to eve
 
 ## Docker
 
-Multi-stage Dockerfile: build stage compiles both workspaces, production stage copies only `server/dist` + `server/public` with production deps. Exposes port 8080.
+Multi-stage Dockerfile: build stage builds the client via Vite, production stage copies `server/src` + `server/public` with production deps. Exposes port 8080.

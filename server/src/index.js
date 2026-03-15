@@ -1,4 +1,4 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -18,7 +18,7 @@ app.get('/api/hello', (req, res) => {
 });
 
 // Use braces and an asterisk with a name (e.g., 'path') to match everything
-app.get('{/*path}', (req: Request, res: Response) => {
+app.get('{/*path}', (req, res) => {
   res.sendFile(path.join(__dirname, '../public', 'index.html'));
 });
 

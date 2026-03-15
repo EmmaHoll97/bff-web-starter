@@ -19,8 +19,8 @@ COPY package.json package-lock.json ./
 COPY server/package.json ./server/
 RUN npm ci --workspace server --omit=dev
 
-# Grab the build artifacts
-COPY --from=build /app/server/dist ./server/dist
+# Grab the server source and client build artifacts
+COPY --from=build /app/server/src ./server/src
 COPY --from=build /app/server/public ./server/public
 
 EXPOSE 8080

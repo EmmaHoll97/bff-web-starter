@@ -6,18 +6,12 @@ export default {
     {
       displayName: 'client',
       testEnvironment: 'jsdom',
-      testMatch: ['<rootDir>/client/src/**/*.test.{ts,tsx}'],
-      transform: {
-        '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: './client/tsconfig.json' }],
-      },
+      testMatch: ['<rootDir>/client/src/**/*.test.{js,jsx}'],
     },
     {
       displayName: 'server',
       testEnvironment: 'node',
-      testMatch: ['<rootDir>/server/src/**/*.test.ts'],
-      transform: {
-        '^.+\\.ts$': ['ts-jest', { tsconfig: './server/tsconfig.json' }],
-      },
+      testMatch: ['<rootDir>/server/src/**/*.test.js'],
     },
   ],
 };
